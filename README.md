@@ -6,7 +6,7 @@
 
 
 
-## Installation
+### Installation
 
 You can install the package via composer:
 
@@ -14,29 +14,51 @@ You can install the package via composer:
 composer require tepuilabs/sendinblue
 ```
 
-## Testing
+Then add:
+
+- `SENDINBLUE_API_KEY` to your env
+
+Add this to your `config/mail.php` file
+
+```php
+    'mailers' => [
+		'sendinblue' => [
+			'transport' => 'sendinblue',
+		],
+    ],
+```
+### Sending Mail Via A Specific Mailer
+
+```php
+Mail::mailer('sendinblue')
+    ->to($request->user())
+    ->send(new OrderShipped($order));
+```
+
+
+### Testing
 
 ``` bash
 composer test
 ```
 
-## Changelog
+### Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
-## Contributing
+### Contributing
 
 Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
-## Security Vulnerabilities
+### Security Vulnerabilities
 
 Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
 
-## Credits
+### Credits
 
 - [tepuiLABS](https://github.com/tepuiLABS)
 - [All Contributors](../../contributors)
 
-## License
+### License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
