@@ -3,7 +3,7 @@
 namespace Tepuilabs\Sendinblue;
 
 use Illuminate\Mail\Transport\Transport;
-use SendinBlue\Client\Api\SMTPApi;
+use SendinBlue\Client\Api\TransactionalEmailsApi;
 use SendinBlue\Client\Model\SendSmtpEmail;
 use Swift_Attachment;
 use Swift_Mime_Headers_UnstructuredHeader;
@@ -15,17 +15,17 @@ class SendinBlueTransport extends Transport
     /**
      * The SendinBlue instance.
      *
-     * @var \SendinBlue\Client\Api\SMTPApi
+     * @var \SendinBlue\Client\Api\TransactionalEmailsApi
      */
     protected $api;
 
     /**
      * Create a new SendinBlue transport instance.
      *
-     * @param  \SendinBlue\Client\Api\SMTPApi  $mailin
+     * @param  \SendinBlue\Client\Api\TransactionalEmailsApi  $api
      * @return void
      */
-    public function __construct(SMTPApi $api)
+    public function __construct(TransactionalEmailsApi $api)
     {
         $this->api = $api;
     }
