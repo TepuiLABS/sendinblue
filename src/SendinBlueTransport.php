@@ -2,14 +2,13 @@
 
 namespace Tepuilabs\Sendinblue;
 
-use Swift_MimePart;
-use Swift_Attachment;
-use Swift_Mime_SimpleMessage;
-use SendinBlue\Client\Api\SMTPApi;
 use Illuminate\Mail\Transport\Transport;
+use SendinBlue\Client\Api\SMTPApi;
 use SendinBlue\Client\Model\SendSmtpEmail;
+use Swift_Attachment;
 use Swift_Mime_Headers_UnstructuredHeader;
-
+use Swift_Mime_SimpleMessage;
+use Swift_MimePart;
 
 class SendinBlueTransport extends Transport
 {
@@ -60,7 +59,7 @@ class SendinBlueTransport extends Transport
             $key = key($from);
             $smtpEmail->setSender(new \SendinBlue\Client\Model\SendSmtpEmailSender([
                 'email' => $key,
-                'name'     => $from[$key],
+                'name' => $from[$key],
             ]));
         }
 
@@ -69,7 +68,7 @@ class SendinBlueTransport extends Transport
             foreach ($message->getTo() as $email => $name) {
                 $to[] = new \SendinBlue\Client\Model\SendSmtpEmailTo([
                     'email' => $email,
-                    'name'     => $name,
+                    'name' => $name,
                 ]);
             }
             $smtpEmail->setTo($to);
@@ -80,7 +79,7 @@ class SendinBlueTransport extends Transport
             foreach ($message->getCc() as $email => $name) {
                 $cc[] = new \SendinBlue\Client\Model\SendSmtpEmailCc([
                     'email' => $email,
-                    'name'     => $name,
+                    'name' => $name,
                 ]);
             }
             $smtpEmail->setCC($cc);
@@ -91,7 +90,7 @@ class SendinBlueTransport extends Transport
             foreach ($message->getBcc() as $email => $name) {
                 $bcc[] = new \SendinBlue\Client\Model\SendSmtpEmailBcc([
                     'email' => $email,
-                    'name'     => $name,
+                    'name' => $name,
                 ]);
             }
             $smtpEmail->setBcc($bcc);
@@ -104,10 +103,12 @@ class SendinBlueTransport extends Transport
         switch ($message->getContentType()) {
             case 'text/plain':
                 $text = $message->getBody();
+
                 break;
 
             default:
                 $html = $message->getBody();
+
                 break;
         }
 
@@ -138,7 +139,7 @@ class SendinBlueTransport extends Transport
             foreach ($message->getReplyTo() as $email => $name) {
                 $replyTo[] = new \SendinBlue\Client\Model\SendSmtpEmailReplyTo([
                     'email' => $email,
-                    'name'     => $name,
+                    'name' => $name,
                 ]);
             }
 
@@ -149,8 +150,8 @@ class SendinBlueTransport extends Transport
         foreach ($message->getChildren() as $child) {
             if ($child instanceof Swift_Attachment) {
                 $attachment[] = new \SendinBlue\Client\Model\SendSmtpEmailAttachment([
-                    'name'         => $child->getFilename(),
-                    'content'     => chunk_split(base64_encode($child->getBody()))
+                    'name' => $child->getFilename(),
+                    'content' => chunk_split(base64_encode($child->getBody())),
                 ]);
             }
         }
