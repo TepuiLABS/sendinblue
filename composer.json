@@ -1,23 +1,25 @@
 {
-    "name": ":vendor_name/:package_name",
-    "description": ":package_description",
+    "name": "tepuilabs/sendinblue",
+    "description": "custom email provider",
     "keywords": [
-        ":vendor_name",
-        ":package_name"
+        "tepuilabs",
+        "sendinblue"
     ],
-    "homepage": "https://github.com/:vendor_name/:package_name",
+    "homepage": "https://github.com/tepuilabs/sendinblue",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": ":author_email",
-            "homepage": "https://spatie.be",
+            "name": "angel cruz",
+            "email": "bullgram@gmail.com",
+            "homepage": "https://tepuilabs.dev",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^7.4",
-        "illuminate/contracts": "^8.0"
+        "guzzlehttp/guzzle": "^7.1",
+        "illuminate/contracts": "^8.0",
+        "sendinblue/api-v3-sdk": "^7.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
@@ -27,13 +29,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\Skeleton\\": "src",
-            "Spatie\\Skeleton\\Database\\Factories\\": "database/factories"
+            "Tepuilabs\\Sendinblue\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\Skeleton\\Tests\\": "tests"
+            "Tepuilabs\\Sendinblue\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -48,10 +49,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\Skeleton\\SkeletonServiceProvider"
+                "Tepuilabs\\Sendinblue\\SendinblueServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "Spatie\\Skeleton\\SkeletonFacade"
+                "Sendinblue": "Tepuilabs\\Sendinblue\\SendinblueFacade"
             }
         }
     },
