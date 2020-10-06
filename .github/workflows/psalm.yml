@@ -2,6 +2,8 @@ name: Psalm
 
 on:
   push:
+    branches:
+      - master
     paths:
       - '**.php'
       - 'psalm.xml.dist'
