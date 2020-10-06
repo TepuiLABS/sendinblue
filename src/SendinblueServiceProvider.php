@@ -4,7 +4,6 @@ namespace Tepuilabs\Sendinblue;
 
 use GuzzleHttp\Client as GuzzleClient;
 
-use Illuminate\Mail\MailManager;
 use Illuminate\Support\ServiceProvider;
 use SendinBlue\Client\Api\TransactionalEmailsApi;
 use SendinBlue\Client\Configuration;
@@ -13,7 +12,7 @@ class SendinblueServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        $this->app[MailManager::class]->extend('sendinblue', function ($app) {
+        $this->app[\Illuminate\Mail\MailManager::class]->extend('sendinblue', function ($app) {
             return new SendinBlueTransport($this->app->make(TransactionalEmailsApi::class));
         });
     }
