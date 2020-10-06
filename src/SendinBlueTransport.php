@@ -154,17 +154,21 @@ class SendinBlueTransport extends Transport
         }
 
         if ($message->getHeaders()) {
-            $headers = [];
 
-            foreach ($message->getHeaders()->getAll() as $header) {
-                if ($header instanceof Swift_Mime_Headers_UnstructuredHeader) {
-                    // remove content type because it creates conflict with content type sets by sendinblue api
-                    if ($header->getFieldName() != 'Content-Type') {
-                        $headers[$header->getFieldName()] = $header->getValue();
-                    }
-                }
-            }
-            $smtpEmail->setHeaders($headers);
+            // @todo SendinBlue\Client\Model\SendSmtpEmail::setHeaders expects object, array<string, string> provided
+
+            // $headers = [];
+
+            // foreach ($message->getHeaders()->getAll() as $header) {
+            //     if ($header instanceof Swift_Mime_Headers_UnstructuredHeader) {
+            //         // remove content type because it creates conflict with content type sets by sendinblue api
+            //         if ($header->getFieldName() != 'Content-Type') {
+            //             $headers[$header->getFieldName()] = $header->getValue();
+            //         }
+            //     }
+            // }
+
+            $smtpEmail->setHeaders($message->getHeaders());
         }
 
         return $smtpEmail;
