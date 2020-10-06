@@ -100,10 +100,12 @@ class SendinBlueTransport extends Transport
         switch ($message->getContentType()) {
             case 'text/plain':
                 $text = $message->getBody();
+
                 break;
 
             default:
                 $html = $message->getBody();
+
                 break;
         }
 
