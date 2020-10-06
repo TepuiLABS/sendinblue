@@ -12,7 +12,7 @@ class SendinblueServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        $this->app[\Illuminate\Mail\MailManager::class]->extend('sendinblue', function ($app) {
+        app(\Illuminate\Mail\MailManager::class)->extend('sendinblue', function ($app) {
             return new SendinBlueTransport($this->app->make(TransactionalEmailsApi::class));
         });
     }
