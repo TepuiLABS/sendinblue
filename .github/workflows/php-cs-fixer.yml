@@ -1,7 +1,7 @@
 name: Check & fix styling
 
 on:
-  push:
+  pull_request:
     branches:
       - master
 
