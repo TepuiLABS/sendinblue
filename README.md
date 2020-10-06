@@ -21,11 +21,13 @@ Then add:
 Add this to your `config/mail.php` file
 
 ```php
-    'mailers' => [
-		'sendinblue' => [
-			'transport' => 'sendinblue',
-		],
-    ],
+'mailers' => [
+    ...
+
+	'sendinblue' => [
+		'transport' => 'sendinblue',
+	],
+],
 ```
 ### Sending Mail Via A Specific Mailer
 
