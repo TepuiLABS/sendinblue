@@ -3,8 +3,6 @@
 namespace Tepuilabs\Sendinblue;
 
 use Illuminate\Mail\Transport\Transport;
-use SendinBlue\Client\Api\SMTPApi;
-use SendinBlue\Client\Model\SendSmtpEmail;
 use Swift_Attachment;
 use Swift_Mime_Headers_UnstructuredHeader;
 use Swift_Mime_SimpleMessage;
@@ -15,17 +13,17 @@ class SendinBlueTransport extends Transport
     /**
      * The SendinBlue instance.
      *
-     * @var \SendinBlue\Client\Api\SMTPApi
+     * @var \SendinBlue\Client\Api\TransactionalEmailsApi
      */
     protected $api;
 
     /**
      * Create a new SendinBlue transport instance.
      *
-     * @param  \SendinBlue\Client\Api\SMTPApi  $mailin
+     * @param  \SendinBlue\Client\Api\TransactionalEmailsApi  $mailin
      * @return void
      */
-    public function __construct(SMTPApi $api)
+    public function __construct(\SendinBlue\Client\Api\TransactionalEmailsApi $api)
     {
         $this->api = $api;
     }
@@ -47,11 +45,11 @@ class SendinBlueTransport extends Transport
      * cf. https://github.com/sendinblue/APIv3-php-library/blob/master/docs/Model/SendSmtpEmail.md
      *
      * @param  Swift_Mime_SimpleMessage $message
-     * @return SendinBlue\Client\Model\SendSmtpEmail
+     * @return \SendinBlue\Client\Model\SendSmtpEmail
      */
-    protected function buildData($message)
+    protected function buildData(Swift_Mime_SimpleMessage $message)
     {
-        $smtpEmail = new SendSmtpEmail();
+        $smtpEmail = new \SendinBlue\Client\Model\SendSmtpEmail();
 
         if ($message->getFrom()) {
             $from = $message->getFrom();
@@ -96,7 +94,6 @@ class SendinBlueTransport extends Transport
             $smtpEmail->setBcc($bcc);
         }
 
-        // set content
         $html = null;
         $text = null;
 
@@ -126,25 +123,24 @@ class SendinBlueTransport extends Transport
         if ($html !== null) {
             $smtpEmail->setHtmlContent($html);
         }
-
         $smtpEmail->setTextContent($text);
-        // end set content
 
         if ($message->getSubject()) {
             $smtpEmail->setSubject($message->getSubject());
         }
 
-        if ($message->getReplyTo()) {
-            $replyTo = [];
-            foreach ($message->getReplyTo() as $email => $name) {
-                $replyTo[] = new \SendinBlue\Client\Model\SendSmtpEmailReplyTo([
-                    'email' => $email,
-                    'name' => $name,
-                ]);
-            }
+        // @todo Cannot iterate over string (see https://psalm.dev/009)
 
-            $smtpEmail->setReplyTo(end($replyTo));
-        }
+        // if ($message->getReplyTo()) {
+        //     $replyTo = [];
+        //     foreach ($message->getReplyTo() as $email => $name) {
+        //         $replyTo[] = new \SendinBlue\Client\Model\SendSmtpEmailReplyTo([
+        //             'email' => $email,
+        //             'name' => $name,
+        //         ]);
+        //     }
+        //     $smtpEmail->setReplyTo(end($replyTo));
+        // }
 
         $attachment = [];
         foreach ($message->getChildren() as $child) {
@@ -160,17 +156,21 @@ class SendinBlueTransport extends Transport
         }
 
         if ($message->getHeaders()) {
-            $headers = [];
 
-            foreach ($message->getHeaders()->getAll() as $header) {
-                if ($header instanceof Swift_Mime_Headers_UnstructuredHeader) {
-                    // remove content type because it creates conflict with content type sets by sendinblue api
-                    if ($header->getFieldName() != 'Content-Type') {
-                        $headers[$header->getFieldName()] = $header->getValue();
-                    }
-                }
-            }
-            $smtpEmail->setHeaders($headers);
+            // @todo SendinBlue\Client\Model\SendSmtpEmail::setHeaders expects object, array<string, string> provided
+
+            // $headers = [];
+
+            // foreach ($message->getHeaders()->getAll() as $header) {
+            //     if ($header instanceof Swift_Mime_Headers_UnstructuredHeader) {
+            //         // remove content type because it creates conflict with content type sets by sendinblue api
+            //         if ($header->getFieldName() != 'Content-Type') {
+            //             $headers[$header->getFieldName()] = $header->getValue();
+            //         }
+            //     }
+            // }
+
+            $smtpEmail->setHeaders($message->getHeaders());
         }
 
         return $smtpEmail;
