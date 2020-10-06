@@ -2,6 +2,8 @@ name: Psalm
 
 on:
   pull_request:
+    branches:
+      - master
     paths:
       - '**.php'
       - 'psalm.xml.dist'
