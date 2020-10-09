@@ -5,7 +5,6 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/tepuilabs/sendinblue.svg?style=flat-square)](https://packagist.org/packages/tepuilabs/sendinblue)
 
 
-
 ### Installation
 
 You can install the package via composer:
