@@ -46,6 +46,8 @@ class SendinBlueTransport extends Transport
      *
      * @param  Swift_Mime_SimpleMessage $message
      * @return \SendinBlue\Client\Model\SendSmtpEmail
+     * @psalm-suppress InvalidIterator
+     * @psalm-suppress InvalidArgument
      */
     protected function buildData(Swift_Mime_SimpleMessage $message)
     {
@@ -94,6 +96,7 @@ class SendinBlueTransport extends Transport
             $smtpEmail->setBcc($bcc);
         }
 
+        // set content
         $html = null;
         $text = null;
 
@@ -108,6 +111,7 @@ class SendinBlueTransport extends Transport
 
                 break;
         }
+
 
         $children = $message->getChildren();
         foreach ($children as $child) {
@@ -124,23 +128,22 @@ class SendinBlueTransport extends Transport
             $smtpEmail->setHtmlContent($html);
         }
         $smtpEmail->setTextContent($text);
+        // end set content
 
         if ($message->getSubject()) {
             $smtpEmail->setSubject($message->getSubject());
         }
 
-        // @todo Cannot iterate over string (see https://psalm.dev/009)
-
-        // if ($message->getReplyTo()) {
-        //     $replyTo = [];
-        //     foreach ($message->getReplyTo() as $email => $name) {
-        //         $replyTo[] = new \SendinBlue\Client\Model\SendSmtpEmailReplyTo([
-        //             'email' => $email,
-        //             'name' => $name,
-        //         ]);
-        //     }
-        //     $smtpEmail->setReplyTo(end($replyTo));
-        // }
+        if ($message->getReplyTo()) {
+            $replyTo = [];
+            foreach ($message->getReplyTo() as $email => $name) {
+                $replyTo[] = new \SendinBlue\Client\Model\SendSmtpEmailReplyTo([
+                    'email' => $email,
+                    'name' => $name,
+                ]);
+            }
+            $smtpEmail->setReplyTo(end($replyTo));
+        }
 
         $attachment = [];
         foreach ($message->getChildren() as $child) {
@@ -156,21 +159,17 @@ class SendinBlueTransport extends Transport
         }
 
         if ($message->getHeaders()) {
+            $headers = [];
 
-            // @todo SendinBlue\Client\Model\SendSmtpEmail::setHeaders expects object, array<string, string> provided
-
-            // $headers = [];
-
-            // foreach ($message->getHeaders()->getAll() as $header) {
-            //     if ($header instanceof Swift_Mime_Headers_UnstructuredHeader) {
-            //         // remove content type because it creates conflict with content type sets by sendinblue api
-            //         if ($header->getFieldName() != 'Content-Type') {
-            //             $headers[$header->getFieldName()] = $header->getValue();
-            //         }
-            //     }
-            // }
-
-            $smtpEmail->setHeaders($message->getHeaders());
+            foreach ($message->getHeaders()->getAll() as $header) {
+                if ($header instanceof Swift_Mime_Headers_UnstructuredHeader) {
+                    // remove content type because it creates conflict with content type sets by sendinblue api
+                    if ($header->getFieldName() != 'Content-Type') {
+                        $headers[$header->getFieldName()] = $header->getValue();
+                    }
+                }
+            }
+            $smtpEmail->setHeaders($headers);
         }
 
         return $smtpEmail;
